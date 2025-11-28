@@ -28,21 +28,12 @@ scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
-# -----------------------------
-# 6. Train KNN model
-# -----------------------------
-# Choose number of neighbors (k). You can experiment with different k values.
 model = KNeighborsClassifier(n_neighbors=5)
 model.fit(X_train, y_train_class)
 
-# -----------------------------
-# 7. Predict
-# -----------------------------
 y_pred = model.predict(X_test)
 
-# -----------------------------
-# 8. Evaluate
-# -----------------------------
+
 accuracy = accuracy_score(y_test_class, y_pred)
 precision = precision_score(y_test_class, y_pred, average="macro")
 recall = recall_score(y_test_class, y_pred, average="macro")
