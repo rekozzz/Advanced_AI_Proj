@@ -48,7 +48,6 @@ cm = confusion_matrix(y_test, y_pred)
 
 
 print("Naive Bayes Results on Breast Cancer Dataset:")
-print("-----------------------------------------------")
 print(f"Accuracy : {accuracy:.4f}")
 print(f"Precision: {precision:.4f}")
 print(f"Recall   : {recall:.4f}")
