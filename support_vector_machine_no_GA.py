@@ -1,49 +1,49 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.svm import SVC
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 
-# Load preprocessed data (optional: you can save X and y from processing.py as CSVs)
-data = pd.read_csv("train.csv")
+data = pd.read_csv("data.csv")
 
-# --- Preprocessing
-X = data.drop(["SalePrice", "Id"], axis=1)
-y = data["SalePrice"]
+# Drop useless columns
+data = data.drop(["id", "Unnamed: 32"], axis=1)
 
-# Fill missing values
-X = X.fillna(0)
+# Encode diagnosis (M = 1, B = 0)
+label_encoder = LabelEncoder()
+data["diagnosis"] = label_encoder.fit_transform(data["diagnosis"])
 
-# Convert categorical to numeric
-X = pd.get_dummies(X)
+
+X = data.drop("diagnosis", axis=1)
+y = data["diagnosis"]
 
 # Train/test split
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42
 )
-y_train_class = pd.qcut(y_train, q=3, labels=["Low", "Medium", "High"])
-y_test_class = pd.qcut(y_test, q=3, labels=["Low", "Medium", "High"])
 
-#scaling for the svm to perform better
+
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
 
 model = SVC(kernel='rbf', C=1.0, gamma='scale')  
-model.fit(X_train, y_train_class)
+model.fit(X_train, y_train)
 
 
 y_pred = model.predict(X_test)
 
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
+cm = confusion_matrix(y_test, y_pred)
 
-accuracy = accuracy_score(y_test_class, y_pred)
-precision = precision_score(y_test_class, y_pred, average="macro")
-recall = recall_score(y_test_class, y_pred, average="macro")
-f1 = f1_score(y_test_class, y_pred, average="macro")
-
-print("SVM Results:")
-print(f"Accuracy:  {accuracy:.4f}")
+print("SVM Results on Breast Cancer Dataset:")
+print(f"Accuracy : {accuracy:.4f}")
 print(f"Precision: {precision:.4f}")
-print(f"Recall:    {recall:.4f}")
-print(f"F1 Score:  {f1:.4f}")
+print(f"Recall   : {recall:.4f}")
+print(f"F1 Score : {f1:.4f}")
+print("\nConfusion Matrix:")
+print(cm)
