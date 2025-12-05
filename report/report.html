@@ -10,7 +10,6 @@
 
 <body>
 
-  <img src="img/cover.jpeg" alt="Breast Cancer Classification Project" class="cover-image">
 
   <h1>Breast Cancer Classification Using Machine Learning with Genetic Algorithm Feature Selection</h1>
 
@@ -24,45 +23,67 @@
 
   <div class="section">
     <h2>1. Problem Statement</h2>
-    <p>Breast cancer is one of the most common cancers affecting women worldwide, with early detection being critical for successful treatment and survival. Medical professionals rely on diagnostic imaging techniques such as Fine Needle Aspiration (FNA) to extract cells from suspicious breast masses for analysis. These cells are then evaluated based on various morphological characteristics to determine whether the tumor is <strong>benign (non-cancerous)</strong> or <strong>malignant (cancerous)</strong>.</p>
-    
+    <p>Breast cancer is one of the most common cancers affecting women worldwide, with early detection being critical
+      for successful treatment and survival. Medical professionals rely on diagnostic imaging techniques such as Fine
+      Needle Aspiration (FNA) to extract cells from suspicious breast masses for analysis. These cells are then
+      evaluated based on various morphological characteristics to determine whether the tumor is <strong>benign
+        (non-cancerous)</strong> or <strong>malignant (cancerous)</strong>.</p>
+
     <h3>Core Challenges:</h3>
     <ul>
-      <li><strong>High Dimensionality:</strong> Medical diagnostic data contains numerous features (30 features in this dataset), many of which may be redundant, correlated, or irrelevant</li>
-      <li><strong>Model Performance:</strong> Different machine learning algorithms have varying capabilities in handling medical classification tasks</li>
-      <li><strong>Feature Redundancy:</strong> Using all available features can lead to increased computational cost, overfitting on training data, reduced model interpretability, and longer training and prediction times</li>
-      <li><strong>Accuracy vs Efficiency Trade-off:</strong> Finding the optimal balance between model accuracy and computational efficiency</li>
+      <li><strong>High Dimensionality:</strong> Medical diagnostic data contains numerous features (30 features in this
+        dataset), many of which may be redundant, correlated, or irrelevant</li>
+      <li><strong>Model Performance:</strong> Different machine learning algorithms have varying capabilities in
+        handling medical classification tasks</li>
+      <li><strong>Feature Redundancy:</strong> Using all available features can lead to increased computational cost,
+        overfitting on training data, reduced model interpretability, and longer training and prediction times</li>
+      <li><strong>Accuracy vs Efficiency Trade-off:</strong> Finding the optimal balance between model accuracy and
+        computational efficiency</li>
     </ul>
 
     <h3>Research Question:</h3>
-    <p><em>"Can Genetic Algorithm-based feature selection improve the performance, efficiency, and interpretability of machine learning models for breast cancer classification while maintaining or enhancing diagnostic accuracy?"</em></p>
-    <p>This project addresses the need for <strong>automated, accurate, and efficient</strong> breast cancer classification systems that can assist medical professionals in making faster and more reliable diagnostic decisions.</p>
+    <p><em>"Can Genetic Algorithm-based feature selection improve the performance, efficiency, and interpretability of
+        machine learning models for breast cancer classification while maintaining or enhancing diagnostic
+        accuracy?"</em></p>
+    <p>This project addresses the need for <strong>automated, accurate, and efficient</strong> breast cancer
+      classification systems that can assist medical professionals in making faster and more reliable diagnostic
+      decisions.</p>
   </div>
 
   <div class="section new-page">
     <h2>2. Project Objectives</h2>
-    
+
     <h3>Primary Objectives:</h3>
     <ul>
-      <li><strong>Binary Classification Task:</strong> Develop machine learning models to classify breast cancer tumors as Benign (B) - Non-cancerous, not life-threatening, or Malignant (M) - Cancerous, requires immediate medical intervention</li>
-      <li><strong>Comparative Algorithm Analysis:</strong> Implement and evaluate four different machine learning algorithms: Artificial Neural Network (ANN/MLP), K-Nearest Neighbors (KNN), Naive Bayes, and Support Vector Machine (SVM)</li>
-      <li><strong>Feature Selection Using Genetic Algorithm:</strong> Apply evolutionary optimization to identify the most relevant feature subset, reduce dimensionality while preserving or improving classification accuracy</li>
-      <li><strong>Performance Comparison:</strong> Compare each algorithm's performance WITH and WITHOUT GA-selected features</li>
+      <li><strong>Binary Classification Task:</strong> Develop machine learning models to classify breast cancer tumors
+        as Benign (B) - Non-cancerous, not life-threatening, or Malignant (M) - Cancerous, requires immediate medical
+        intervention</li>
+      <li><strong>Comparative Algorithm Analysis:</strong> Implement and evaluate four different machine learning
+        algorithms: Artificial Neural Network (ANN/MLP), K-Nearest Neighbors (KNN), Naive Bayes, and Support Vector
+        Machine (SVM)</li>
+      <li><strong>Feature Selection Using Genetic Algorithm:</strong> Apply evolutionary optimization to identify the
+        most relevant feature subset, reduce dimensionality while preserving or improving classification accuracy</li>
+      <li><strong>Performance Comparison:</strong> Compare each algorithm's performance WITH and WITHOUT GA-selected
+        features</li>
     </ul>
 
     <h3>Secondary Objectives:</h3>
     <ul>
-      <li><strong>Demonstrate Best Practices in ML Pipeline:</strong> Data preprocessing and normalization, proper train-test splitting, reproducible experiments (random_state=42), comprehensive evaluation metrics</li>
-      <li><strong>Medical AI Considerations:</strong> Emphasize recall (sensitivity) as a critical metric, minimize false negatives (missing cancer cases)</li>
-      <li><strong>Model Interpretability:</strong> Identify which features are most important for diagnosis, simplify models by reducing feature count</li>
+      <li><strong>Demonstrate Best Practices in ML Pipeline:</strong> Data preprocessing and normalization, proper
+        train-test splitting, reproducible experiments (random_state=42), comprehensive evaluation metrics</li>
+      <li><strong>Medical AI Considerations:</strong> Emphasize recall (sensitivity) as a critical metric, minimize
+        false negatives (missing cancer cases)</li>
+      <li><strong>Model Interpretability:</strong> Identify which features are most important for diagnosis, simplify
+        models by reducing feature count</li>
     </ul>
   </div>
 
   <div class="section">
     <h2>3. Dataset Description</h2>
-    
+
     <h3>Dataset Source: Wisconsin Diagnostic Breast Cancer (WDBC) Dataset</h3>
-    <p>Original data contains 569 patient samples. Features computed from digitized images of Fine Needle Aspirate (FNA) of breast mass. Each sample represents measurements of cell nuclei characteristics.</p>
+    <p>Original data contains 569 patient samples. Features computed from digitized images of Fine Needle Aspirate (FNA)
+      of breast mass. Each sample represents measurements of cell nuclei characteristics.</p>
 
     <h3>Original Dataset Statistics:</h3>
     <table>
@@ -113,12 +134,13 @@
       <li><strong>Symmetry:</strong> Symmetry of the cell nucleus</li>
       <li><strong>Fractal Dimension:</strong> "Coastline approximation" - 1</li>
     </ul>
-    <p><strong>Feature Groups:</strong> Mean values (10 features), Standard Error (10 features), Worst/Largest (10 features) = <strong>Total: 30 numerical features</strong></p>
+    <p><strong>Feature Groups:</strong> Mean values (10 features), Standard Error (10 features), Worst/Largest (10
+      features) = <strong>Total: 30 numerical features</strong></p>
   </div>
 
   <div class="section new-page">
     <h2>4. Dataset After Genetic Algorithm Feature Selection</h2>
-    
+
     <table>
       <tr>
         <th>Attribute</th>
@@ -167,7 +189,7 @@
 
   <div class="section">
     <h2>5. Genetic Algorithm Feature Selection Process</h2>
-    
+
     <h3>GA Configuration:</h3>
     <ul>
       <li>Population Size: 20 individuals</li>
@@ -180,18 +202,24 @@
 
     <h3>How GA Works:</h3>
     <ul>
-      <li><strong>Initialization:</strong> Creates 20 random binary vectors (length 30). Each bit represents whether to include (1) or exclude (0) a feature</li>
-      <li><strong>Fitness Evaluation:</strong> For each individual, train a KNN classifier using selected features. Calculate accuracy on test set. Higher accuracy = better fitness</li>
-      <li><strong>Selection:</strong> Roulette wheel selection favors better individuals. Probability of selection proportional to fitness</li>
-      <li><strong>Crossover (80% probability):</strong> Two parent individuals exchange feature selections. Creates offspring with mixed feature combinations</li>
-      <li><strong>Mutation (10% per bit):</strong> Randomly flip feature inclusion/exclusion. Introduces diversity to prevent premature convergence</li>
-      <li><strong>Evolution:</strong> Repeats for 30 generations. Population improves over time. Best individual selected at the end</li>
+      <li><strong>Initialization:</strong> Creates 20 random binary vectors (length 30). Each bit represents whether to
+        include (1) or exclude (0) a feature</li>
+      <li><strong>Fitness Evaluation:</strong> For each individual, train a KNN classifier using selected features.
+        Calculate accuracy on test set. Higher accuracy = better fitness</li>
+      <li><strong>Selection:</strong> Roulette wheel selection favors better individuals. Probability of selection
+        proportional to fitness</li>
+      <li><strong>Crossover (80% probability):</strong> Two parent individuals exchange feature selections. Creates
+        offspring with mixed feature combinations</li>
+      <li><strong>Mutation (10% per bit):</strong> Randomly flip feature inclusion/exclusion. Introduces diversity to
+        prevent premature convergence</li>
+      <li><strong>Evolution:</strong> Repeats for 30 generations. Population improves over time. Best individual
+        selected at the end</li>
     </ul>
   </div>
 
   <div class="section new-page">
     <h2>6. Dimensionality Reduction Impact Analysis</h2>
-    
+
     <h3>Quantitative Impact:</h3>
     <table>
       <tr>
@@ -228,23 +256,32 @@
 
     <h3>Benefits of Dimensionality Reduction:</h3>
     <ul>
-      <li><strong>Computational Efficiency:</strong> Faster Training, Reduced Memory Usage, Quicker Predictions, Lower Storage</li>
-      <li><strong>Reduced Overfitting Risk:</strong> Fewer features reduce the chance of memorizing noise. Simpler models generalize better to unseen data</li>
-      <li><strong>Improved Model Interpretability:</strong> 14 features are easier to understand than 30. Medical professionals can focus on key diagnostic indicators</li>
-      <li><strong>Feature Relevance:</strong> Eliminates redundant features, removes noisy or irrelevant features, retains most informative features for classification</li>
-      <li><strong>Curse of Dimensionality Mitigation:</strong> In high-dimensional spaces, data becomes sparse. Reduction to 14D improves algorithm effectiveness</li>
+      <li><strong>Computational Efficiency:</strong> Faster Training, Reduced Memory Usage, Quicker Predictions, Lower
+        Storage</li>
+      <li><strong>Reduced Overfitting Risk:</strong> Fewer features reduce the chance of memorizing noise. Simpler
+        models generalize better to unseen data</li>
+      <li><strong>Improved Model Interpretability:</strong> 14 features are easier to understand than 30. Medical
+        professionals can focus on key diagnostic indicators</li>
+      <li><strong>Feature Relevance:</strong> Eliminates redundant features, removes noisy or irrelevant features,
+        retains most informative features for classification</li>
+      <li><strong>Curse of Dimensionality Mitigation:</strong> In high-dimensional spaces, data becomes sparse.
+        Reduction to 14D improves algorithm effectiveness</li>
     </ul>
   </div>
 
   <div class="section">
     <h2>7. Performance Evaluation</h2>
-    
+
     <h3>Evaluation Metrics:</h3>
     <ul>
-      <li><strong>Accuracy:</strong> Percentage of correct predictions overall. Formula: (TP + TN) / (TP + TN + FP + FN)</li>
-      <li><strong>Precision:</strong> Of all predicted malignant cases, how many are truly malignant. Formula: TP / (TP + FP)</li>
-      <li><strong>Recall (Sensitivity):</strong> Of all actual malignant cases, how many were correctly detected. Formula: TP / (TP + FN). <strong>CRITICAL in medical diagnosis</strong> - missing cancer is dangerous!</li>
-      <li><strong>F1 Score:</strong> Harmonic mean of precision and recall. Formula: 2 × (Precision × Recall) / (Precision + Recall)</li>
+      <li><strong>Accuracy:</strong> Percentage of correct predictions overall. Formula: (TP + TN) / (TP + TN + FP + FN)
+      </li>
+      <li><strong>Precision:</strong> Of all predicted malignant cases, how many are truly malignant. Formula: TP / (TP
+        + FP)</li>
+      <li><strong>Recall (Sensitivity):</strong> Of all actual malignant cases, how many were correctly detected.
+        Formula: TP / (TP + FN). <strong>CRITICAL in medical diagnosis</strong> - missing cancer is dangerous!</li>
+      <li><strong>F1 Score:</strong> Harmonic mean of precision and recall. Formula: 2 × (Precision × Recall) /
+        (Precision + Recall)</li>
     </ul>
 
     <h3>Confusion Matrix:</h3>
@@ -258,11 +295,13 @@
 
   <div class="section new-page">
     <h2>8. Model Implementation Details</h2>
-    
+
     <h3>1. Artificial Neural Network (MLP)</h3>
     <ul>
-      <li><strong>Architecture:</strong> Input Layer: 30 neurons (no GA) or 14 neurons (with GA), Hidden Layer 1: 16 neurons (ReLU), Hidden Layer 2: 8 neurons (ReLU), Output Layer: 1 neuron (Sigmoid)</li>
-      <li><strong>Training:</strong> Optimizer: Adam (lr=0.001), Loss: Binary Cross-Entropy, Epochs: 100, Batch Size: 16</li>
+      <li><strong>Architecture:</strong> Input Layer: 30 neurons (no GA) or 14 neurons (with GA), Hidden Layer 1: 16
+        neurons (ReLU), Hidden Layer 2: 8 neurons (ReLU), Output Layer: 1 neuron (Sigmoid)</li>
+      <li><strong>Training:</strong> Optimizer: Adam (lr=0.001), Loss: Binary Cross-Entropy, Epochs: 100, Batch Size: 16
+      </li>
     </ul>
 
     <h3>2. K-Nearest Neighbors (KNN)</h3>
@@ -294,14 +333,16 @@
     <p>All models use consistent preprocessing:</p>
     <ul>
       <li><strong>Label Encoding:</strong> Malignant (M) → 1, Benign (B) → 0</li>
-      <li><strong>Train-Test Split:</strong> Training Set: 80% (455 samples), Test Set: 20% (114 samples), Random State: 42 (for reproducibility)</li>
-      <li><strong>Feature Scaling:</strong> StandardScaler applied. Transforms features to mean=0, std=1. Critical for KNN, SVM, and ANN</li>
+      <li><strong>Train-Test Split:</strong> Training Set: 80% (455 samples), Test Set: 20% (114 samples), Random State:
+        42 (for reproducibility)</li>
+      <li><strong>Feature Scaling:</strong> StandardScaler applied. Transforms features to mean=0, std=1. Critical for
+        KNN, SVM, and ANN</li>
     </ul>
   </div>
 
   <div class="section new-page">
     <h2>10. Performance Comparison Framework</h2>
-    
+
     <h3>Performance Comparison Table:</h3>
     <table>
       <tr>
@@ -384,14 +425,16 @@
     <h2>11. Medical Performance Considerations</h2>
     <p>In a medical diagnostic context:</p>
     <ul>
-      <li><strong>Recall (Sensitivity) > Precision:</strong> Missing cancer is life-threatening. False alarms can be verified with additional tests.</li>
-      <li><strong>Target Metrics:</strong> Recall: Ideally > 95% (catch most malignant cases), Precision: > 85% (minimize unnecessary worry), F1 Score: > 90% (balanced performance)</li>
+      <li><strong>Recall (Sensitivity) > Precision:</strong> Missing cancer is life-threatening. False alarms can be
+        verified with additional tests.</li>
+      <li><strong>Target Metrics:</strong> Recall: Ideally > 95% (catch most malignant cases), Precision: > 85%
+        (minimize unnecessary worry), F1 Score: > 90% (balanced performance)</li>
     </ul>
   </div>
 
   <div class="section new-page">
     <h2>12. Experimental Setup and Reproducibility</h2>
-    
+
     <h3>Environment Requirements:</h3>
     <ul>
       <li>pandas - Data manipulation</li>
@@ -402,16 +445,20 @@
 
     <h3>Execution Workflow:</h3>
     <ul>
-      <li><strong>Step 1 - Feature Selection:</strong> python src/genetic_algorithm.py → Output: breast_cancer_selected_features.csv</li>
-      <li><strong>Step 2 - Models WITHOUT GA:</strong> python src/ann_no_GA.py, python src/knn_no_GA.py, python src/naive_bayes_no_GA.py, python src/support_vector_machine_no_GA.py</li>
-      <li><strong>Step 3 - Models WITH GA:</strong> python src/ann_GA.py, python src/knn_GA.py, python src/naive_bayes_GA.py, python src/support_vector_machine_GA.py</li>
+      <li><strong>Step 1 - Feature Selection:</strong> python src/genetic_algorithm.py → Output:
+        breast_cancer_selected_features.csv</li>
+      <li><strong>Step 2 - Models WITHOUT GA:</strong> python src/ann_no_GA.py, python src/knn_no_GA.py, python
+        src/naive_bayes_no_GA.py, python src/support_vector_machine_no_GA.py</li>
+      <li><strong>Step 3 - Models WITH GA:</strong> python src/ann_GA.py, python src/knn_GA.py, python
+        src/naive_bayes_GA.py, python src/support_vector_machine_GA.py</li>
     </ul>
   </div>
 
   <div class="section">
     <h2>13. Project Structure</h2>
     <ul>
-      <li><strong>src/data_set/</strong> - data.csv (Original 569×32), breast_cancer_selected_features.csv (GA-selected 569×15)</li>
+      <li><strong>src/data_set/</strong> - data.csv (Original 569×32), breast_cancer_selected_features.csv (GA-selected
+        569×15)</li>
       <li><strong>src/genetic_algorithm.py</strong> - GA feature selection</li>
       <li><strong>src/processing.py</strong> - Data exploration (original)</li>
       <li><strong>src/ann_GA.py, ann_no_GA.py</strong> - ANN models</li>
@@ -423,10 +470,11 @@
 
   <div class="section new-page">
     <h2>14. Key Findings and Expected Outcomes</h2>
-    
+
     <h3>Hypotheses:</h3>
     <ul>
-      <li><strong>Hypothesis 1:</strong> GA will select 10-15 most relevant features → ✅ Confirmed: 14 features selected (53% reduction)</li>
+      <li><strong>Hypothesis 1:</strong> GA will select 10-15 most relevant features → ✅ Confirmed: 14 features selected
+        (53% reduction)</li>
       <li><strong>Hypothesis 2:</strong> GA models will train faster → ⏳ To be verified</li>
       <li><strong>Hypothesis 3:</strong> GA models will maintain or improve accuracy → ⏳ To be verified</li>
       <li><strong>Hypothesis 4:</strong> Different algorithms will have different optimal feature sets</li>
@@ -434,8 +482,10 @@
 
     <h3>Expected Results:</h3>
     <ul>
-      <li><strong>KNN:</strong> Expected to benefit most from dimensionality reduction (curse of dimensionality affects distance-based algorithms)</li>
-      <li><strong>SVM:</strong> Should perform well with or without GA (already handles high dimensions effectively)</li>
+      <li><strong>KNN:</strong> Expected to benefit most from dimensionality reduction (curse of dimensionality affects
+        distance-based algorithms)</li>
+      <li><strong>SVM:</strong> Should perform well with or without GA (already handles high dimensions effectively)
+      </li>
       <li><strong>ANN:</strong> May have slight accuracy trade-off but faster training expected with 14 features</li>
       <li><strong>Naive Bayes:</strong> Variable performance - GA may help by removing redundant features</li>
     </ul>
@@ -443,7 +493,7 @@
 
   <div class="section">
     <h2>15. Limitations and Future Work</h2>
-    
+
     <h3>Current Limitations:</h3>
     <ul>
       <li>Single Feature Set: GA optimization performed once using KNN as fitness function</li>
@@ -468,7 +518,7 @@
 
   <div class="section new-page">
     <h2>16. Conclusions</h2>
-    
+
     <h3>Project Accomplishments:</h3>
     <ul>
       <li>✅ <strong>Complete ML Pipeline:</strong> From raw data to trained models</li>
@@ -498,9 +548,10 @@
 
   <div class="section">
     <h2>17. References and Resources</h2>
-    
+
     <h3>Dataset:</h3>
-    <p><strong>Wisconsin Diagnostic Breast Cancer Dataset</strong> - UCI Machine Learning Repository. Creators: Dr. William H. Wolberg, W. Nick Street, Olvi L. Mangasarian</p>
+    <p><strong>Wisconsin Diagnostic Breast Cancer Dataset</strong> - UCI Machine Learning Repository. Creators: Dr.
+      William H. Wolberg, W. Nick Street, Olvi L. Mangasarian</p>
 
     <h3>Algorithms:</h3>
     <ul>
@@ -523,7 +574,9 @@
   <div class="section">
     <div class="section">
       <h2>Summary</h2>
-      <p>This project successfully demonstrates a complete machine learning pipeline for breast cancer classification using the Wisconsin Diagnostic Breast Cancer Dataset. The implementation compares four different algorithms (ANN, KNN, Naive Bayes, SVM) with and without Genetic Algorithm-based feature selection.</p>
+      <p>This project successfully demonstrates a complete machine learning pipeline for breast cancer classification
+        using the Wisconsin Diagnostic Breast Cancer Dataset. The implementation compares four different algorithms
+        (ANN, KNN, Naive Bayes, SVM) with and without Genetic Algorithm-based feature selection.</p>
 
       <p>Key achievements include:</p>
       <ul>
@@ -538,7 +591,8 @@
       <p><strong>Project Status:</strong> Completed - Ready for Experimentation</p>
       <p><strong>License:</strong> Educational Use Only</p>
 
-      <p><em>⚠️ Important Disclaimer: This project is for research and educational purposes only. NOT approved for clinical use and NOT a substitute for professional medical diagnosis.</em></p>
+      <p><em>⚠️ Important Disclaimer: This project is for research and educational purposes only. NOT approved for
+          clinical use and NOT a substitute for professional medical diagnosis.</em></p>
     </div>
 </body>
 
