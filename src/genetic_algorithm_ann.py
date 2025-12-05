@@ -9,7 +9,7 @@ import random
 # ---------------------------
 # Load Dataset
 # ---------------------------
-data = pd.read_csv("data.csv")
+data = pd.read_csv("./data_set/data.csv")
 data = data.drop(columns=["id", "Unnamed: 32"])
 
 X = data.drop(columns=["diagnosis"]).values
