@@ -1,0 +1,125 @@
+@page {
+	margin: 1in;
+	size: A4;
+}
+
+.new-page {
+	page-break-before: always;
+}
+
+.page-break-after {
+	page-break-after: always;
+}
+
+.no-page-break {
+	page-break-inside: avoid;
+}
+
+body {
+	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+	line-height: 1.7;
+	margin: 0;
+	padding: 40px;
+	background-color: #f7fafc;
+	color: #2d3748;
+}
+
+
+h1 {
+	font-size: 2.25rem;
+	font-weight: 700;
+	text-align: center;
+	color: #1a202c;
+	margin-bottom: 32px;
+}
+
+h2 {
+	font-size: 1.5rem;
+	font-weight: 600;
+	color: #2b6cb0;
+	border-bottom: 2px solid #bee3f8;
+	padding-bottom: 8px;
+	margin-top: 40px;
+	margin-bottom: 16px;
+}
+
+h3 {
+	font-size: 1.25rem;
+	font-weight: 500;
+	color: #2d3748;
+	margin-top: 24px;
+}
+
+table {
+	border-collapse: separate;
+	border-spacing: 0;
+	margin: 24px 0;
+	border-radius: 8px;
+	overflow: hidden;
+}
+
+th,
+td {
+	padding: 16px;
+	text-align: left;
+	border-bottom: 1px solid #e2e8f0;
+}
+
+th {
+	background-color: #2b6cb0;
+	color: #ffffff;
+	font-weight: 600;
+}
+
+td {
+	background-color: #f7fafc;
+}
+
+tr:last-child td {
+	border-bottom: none;
+}
+
+ul {
+	margin: 12px 0;
+	padding-left: 24px;
+	list-style-type: disc;
+}
+
+ul li {
+	margin-bottom: 8px;
+}
+
+.section {
+	margin-bottom: 32px;
+}
+
+.section p {
+	margin: 12px 0;
+	color: #4a5568;
+}
+
+@media (max-width: 768px) {
+	body {
+		padding: 16px;
+	}
+
+
+	h1 {
+		font-size: 1.75rem;
+	}
+
+	h2 {
+		font-size: 1.25rem;
+	}
+
+	table {
+		display: block;
+		overflow-x: auto;
+	}
+
+	th,
+	td {
+		font-size: 0.875rem;
+		padding: 12px;
+	}
+}
