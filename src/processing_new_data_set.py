@@ -3,7 +3,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 
-data = pd.read_csv("breast_cancer_selected_features.csv")
+data = pd.read_csv("./data_set/breast_cancer_selected_features.csv")
 print(data.head())
 
 

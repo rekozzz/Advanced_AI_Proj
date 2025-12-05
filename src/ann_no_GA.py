@@ -6,11 +6,10 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.optimizers import Adam
 
-# Load GA-selected dataset
-data = pd.read_csv("breast_cancer_features_for_ann.csv")  # replace with your GA dataset path
+data = pd.read_csv("./data_set/data.csv")  # replace with your path
 
-# Separate features and target
-X = data.drop("diagnosis", axis=1)
+
+X = data.drop(["id", "diagnosis", "Unnamed: 32"], axis=1)  #
 y = data["diagnosis"]
 
 # Encode target: B -> 0, M -> 1
@@ -32,19 +31,19 @@ model.add(Dense(16, input_dim=X_train.shape[1], activation='relu'))  # Hidden la
 model.add(Dense(8, activation='relu'))                                # Hidden layer 2
 model.add(Dense(1, activation='sigmoid'))                             # Output layer
 
-# Compile model
+# compile model
 model.compile(optimizer=Adam(learning_rate=0.001),
               loss='binary_crossentropy',
               metrics=['accuracy'])
 
-# Train model
+# t model
 history = model.fit(X_train, y_train,
                     validation_split=0.1,
                     epochs=100,
                     batch_size=16,
                     verbose=1)
 
-# Evaluate model
+# evaluate model
 y_pred_prob = model.predict(X_test)
 y_pred = (y_pred_prob > 0.5).astype(int).flatten()
 
@@ -54,7 +53,7 @@ recall = recall_score(y_test, y_pred)
 f1 = f1_score(y_test, y_pred)
 cm = confusion_matrix(y_test, y_pred)
 
-print("MLP Results on GA-Selected Breast Cancer Dataset:")
+print("MLP Results:")
 print(f"Accuracy:  {accuracy:.4f}")
 print(f"Precision: {precision:.4f}")
 print(f"Recall:    {recall:.4f}")

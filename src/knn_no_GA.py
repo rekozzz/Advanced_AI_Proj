@@ -4,7 +4,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 
-data = pd.read_csv("data.csv")
+data = pd.read_csv("./data_set/data.csv")
 
 
 X = data.drop(["id", "diagnosis", "Unnamed: 32"], axis=1)  

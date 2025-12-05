@@ -6,7 +6,7 @@ from sklearn.metrics import accuracy_score
 import random
 
 # Load your dataset
-data = pd.read_csv("data.csv")
+data = pd.read_csv("./data_set/data.csv")
 
 # Drop unnecessary columns: 'id' and empty 'Unnamed: 32'
 data = data.drop(columns=['id', 'Unnamed: 32'])
