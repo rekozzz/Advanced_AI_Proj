@@ -7,7 +7,7 @@ from tensorflow.keras.layers import Dense
 from tensorflow.keras.optimizers import Adam
 
 # Load GA-selected dataset
-data = pd.read_csv("breast_cancer_selected_features.csv")  # replace with your GA dataset path
+data = pd.read_csv("breast_cancer_features_for_ann.csv")  # replace with your GA dataset path
 
 # Separate features and target
 X = data.drop("diagnosis", axis=1)
