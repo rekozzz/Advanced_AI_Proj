@@ -1,134 +1,150 @@
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import accuracy_score
-import random
+import warnings
 
-# ---------------------------
-# Load Dataset
-# ---------------------------
-data = pd.read_csv("data.csv")
-data = data.drop(columns=["id", "Unnamed: 32"])
+# Suppress convergence warnings for cleaner output
+warnings.filterwarnings('ignore') 
 
-X = data.drop(columns=["diagnosis"]).values
-y = data["diagnosis"].values
+# -----------------------------
+# Step 1: Load & Preprocess
+# -----------------------------
+# utilizing a dummy load for demonstration; replace with your actual csv load   
+# data = pd.read_csv("breast_cancer.csv") 
+from sklearn.datasets import load_breast_cancer
+data_obj = load_breast_cancer()
+X = pd.DataFrame(data_obj.data, columns=data_obj.feature_names)
+y = data_obj.target
 
-# Encode target: B=0, M=1
-from sklearn.preprocessing import LabelEncoder
-y = LabelEncoder().fit_transform(y)
-
-# Train/test split
+# -----------------------------
+# Step 2: Split Data (Prevent Leakage)
+# -----------------------------
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
+    X, y, test_size=0.2, random_state=42, stratify=y
 )
 
-# Scale data
+# CRITICAL: Scale data based ONLY on training set
 scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_test = scaler.transform(X_test)
+X_train_scaled = pd.DataFrame(scaler.fit_transform(X_train), columns=X_train.columns)
+X_test_scaled = pd.DataFrame(scaler.transform(X_test), columns=X_test.columns)
 
+# -----------------------------
+# Step 3: Genetic Algorithm
+# -----------------------------
 num_features = X_train.shape[1]
+population_size = 10 # Reduced for speed in this demo
+num_generations = 5
+mutation_rate = 0.1
 
-# ---------------------------
-# GA Parameters
-# ---------------------------
-population_size = 20
-num_generations = 25
-crossover_prob = 0.8
-mutation_prob = 0.1
+def initialize_population():
+    return np.random.randint(2, size=(population_size, num_features))
 
-# Initial population (binary feature masks)
-population = np.random.randint(0, 2, size=(population_size, num_features))
-
-# ---------------------------
-# Fitness Function (ANN-like)
-# ---------------------------
-def fitness(individual):
-    # Avoid empty feature sets
-    if np.sum(individual) == 0:
+def fitness(chromosome):
+    # If no feature selected, return 0 fitness
+    if chromosome.sum() == 0:
         return 0
+    
+    # Get column names based on the binary mask
+    cols = X_train.columns
+    selected_features = [cols[i] for i in range(len(chromosome)) if chromosome[i] == 1]
+    
+    # Define the model
+    # Note: increased max_iter to ensure convergence
+    model = MLPClassifier(hidden_layer_sizes=(16, 8), max_iter=500, random_state=42)
+    
+    # --- THE FIX: USE CROSS-VALIDATION ---
+    # We use 3-fold CV. This splits X_train into mini train/val sets 3 times.
+    # The score is the average accuracy on unseen 'validation' slices.
+    scores = cross_val_score(model, X_train_scaled[selected_features], y_train, cv=3)
+    
+    return scores.mean()
 
-    selected = np.where(individual == 1)[0]
+def select_parents(population, fitness_scores):
+    # Added a check to prevent division by zero if all fitnesses are 0
+    fitness_scores = np.array(fitness_scores)
+    total_fitness = fitness_scores.sum()
+    if total_fitness == 0:
+        probs = None # Uniform probability
+    else:
+        probs = fitness_scores / total_fitness
+        
+    indices = np.random.choice(len(population), size=2, p=probs)
+    return population[indices[0]], population[indices[1]]
 
-    X_train_sel = X_train[:, selected]
-    X_test_sel = X_test[:, selected]
+def crossover(parent1, parent2):
+    point = np.random.randint(1, num_features-1)
+    child1 = np.concatenate([parent1[:point], parent2[point:]])
+    child2 = np.concatenate([parent2[:point], parent1[point:]])
+    return child1, child2
 
-    # Fast ANN-like model (similar behavior to Keras MLP)
-    model = MLPClassifier(hidden_layer_sizes=(16, 8),
-                          max_iter=400,
-                          learning_rate_init=0.001,
-                          random_state=42)
-
-    model.fit(X_train_sel, y_train)
-    y_pred = model.predict(X_test_sel)
-
-    return accuracy_score(y_test, y_pred)
-
-# ---------------------------
-# Selection (Roulette Wheel)
-# ---------------------------
-def select(population, fitnesses):
-    fitness_sum = np.sum(fitnesses)
-    probs = fitnesses / fitness_sum
-    idx = np.random.choice(population_size, size=population_size, p=probs)
-    return population[idx]
-
-# ---------------------------
-# Crossover
-# ---------------------------
-def crossover(p1, p2):
-    if random.random() < crossover_prob:
-        point = random.randint(1, num_features - 1)
-        c1 = np.concatenate([p1[:point], p2[point:]])
-        c2 = np.concatenate([p2[:point], p1[point:]])
-        return c1, c2
-    return p1.copy(), p2.copy()
-
-# ---------------------------
-# Mutation
-# ---------------------------
-def mutate(individual):
+def mutate(chromosome):
     for i in range(num_features):
-        if random.random() < mutation_prob:
-            individual[i] = 1 - individual[i]
-    return individual
+        if np.random.rand() < mutation_rate:
+            chromosome[i] = 1 - chromosome[i]
+    return chromosome
 
-# ---------------------------
-# GA Main Loop
-# ---------------------------
-for gen in range(num_generations):
-    fitnesses = np.array([fitness(ind) for ind in population])
-    print(f"Generation {gen+1}: Best Fitness = {fitnesses.max():.4f}")
+# --- Run the GA ---
+population = initialize_population()
 
-    selected = select(population, fitnesses)
+for generation in range(num_generations):
+    fitness_scores = [fitness(chrom) for chrom in population]
+    
+    # Print progress
+    best_gen_fitness = max(fitness_scores)
+    print(f"Gen {generation+1}: Best CV Accuracy = {best_gen_fitness:.4f}")
+    
+    new_population = []
+    
+    # Elitism: Keep the absolute best parent automatically
+    best_idx = np.argmax(fitness_scores)
+    new_population.append(population[best_idx]) 
 
-    next_pop = []
-    for i in range(0, population_size, 2):
-        p1, p2 = selected[i], selected[i+1]
+    while len(new_population) < population_size:
+        p1, p2 = select_parents(population, fitness_scores)
         c1, c2 = crossover(p1, p2)
-        next_pop.append(mutate(c1))
-        next_pop.append(mutate(c2))
+        new_population.append(mutate(c1))
+        if len(new_population) < population_size:
+            new_population.append(mutate(c2))
 
-    population = np.array(next_pop)
+    population = np.array(new_population)
 
-# ---------------------------
-# Get best individual
-# ---------------------------
-fitnesses = np.array([fitness(ind) for ind in population])
-best_idx = fitnesses.argmax()
-best_individual = population[best_idx]
+# -----------------------------
+# Step 4: Evaluate Best Solution
+# -----------------------------
+final_fitness_scores = [fitness(chrom) for chrom in population]
+best_index = np.argmax(final_fitness_scores)
+best_chromosome = population[best_index]
 
-selected_feature_names = data.drop(columns=["diagnosis"]).columns[best_individual == 1].tolist()
+# Convert binary mask to column names
+cols = X_train.columns
+final_features = [cols[i] for i in range(len(best_chromosome)) if best_chromosome[i] == 1]
 
-print("\nSelected Features (for ANN):")
-print(selected_feature_names)
+print("\n--------------------------------")
+print(f"Selected {len(final_features)} features: {final_features}")
 
-# ---------------------------
-# Save optimized dataset
-# ---------------------------
-new_data = data[selected_feature_names + ["diagnosis"]]
-new_data.to_csv("breast_cancer_features_for_ann.csv", index=False)
+# Train final model on ALL of X_train with selected features
+final_model = MLPClassifier(hidden_layer_sizes=(16, 8), max_iter=1000, random_state=42)
+final_model.fit(X_train_scaled[final_features], y_train)
 
-print("\nNew optimized dataset saved as: breast_cancer_features_for_ann.csv")
+# Test on X_test (The dataset the GA never saw)
+y_pred_test = final_model.predict(X_test_scaled[final_features])
+test_acc = accuracy_score(y_test, y_pred_test)
+
+print(f"Final Test Accuracy with Selected Features: {test_acc:.4f}")
+# -----------------------------
+# Step 5: Save GA-Selected Dataset
+# -----------------------------
+
+# Combine features + target for training + test sets
+# Note: Using the original (unscaled) values for clarity
+selected_data = pd.concat([
+    X[final_features],
+    pd.Series(y, name='diagnosis')  # original target
+], axis=1)
+
+# Save to CSV
+selected_data.to_csv("breast_cancer_ga_selected_new_ann.csv", index=False)
+print(f"✅ GA-selected dataset saved as 'breast_cancer_ga_selected.csv'")
