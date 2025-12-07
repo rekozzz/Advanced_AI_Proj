@@ -1,78 +1,84 @@
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+import random
+from sklearn.model_selection import train_test_split, StratifiedKFold
+from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import accuracy_score
-import random
+
+# ---------------------------
+# Fix random seeds for reproducibility
+# ---------------------------
+seed = 42
+np.random.seed(seed)
+random.seed(seed)
+
+import tensorflow as tf
+tf.random.set_seed(seed)
 
 # ---------------------------
 # Load Dataset
 # ---------------------------
 data = pd.read_csv("data.csv")
-data = data.drop(columns=["id", "Unnamed: 32"])
+data = data.drop(columns=["id", "Unnamed: 32"], errors='ignore')
 
 X = data.drop(columns=["diagnosis"]).values
-y = data["diagnosis"].values
+y = LabelEncoder().fit_transform(data["diagnosis"])  # B->0, M->1
 
-# Encode target: B=0, M=1
-from sklearn.preprocessing import LabelEncoder
-y = LabelEncoder().fit_transform(y)
-
-# Train/test split
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
-)
-
-# Scale data
+# Scale features
 scaler = StandardScaler()
-X_train = scaler.fit_transform(X_train)
-X_test = scaler.transform(X_test)
+X = scaler.fit_transform(X)
 
-num_features = X_train.shape[1]
+num_features = X.shape[1]
 
 # ---------------------------
 # GA Parameters
 # ---------------------------
-population_size = 20
-num_generations = 25
+population_size = 30
+num_generations = 30
 crossover_prob = 0.8
 mutation_prob = 0.1
 
-# Initial population (binary feature masks)
+# Initialize population: binary vectors (1=feature selected, 0=not selected)
 population = np.random.randint(0, 2, size=(population_size, num_features))
 
 # ---------------------------
-# Fitness Function (ANN-like)
+# Fitness Function with Cross-Validation
 # ---------------------------
 def fitness(individual):
-    # Avoid empty feature sets
     if np.sum(individual) == 0:
-        return 0
+        return 0  # avoid empty feature sets
 
-    selected = np.where(individual == 1)[0]
+    selected_indices = np.where(individual == 1)[0]
+    X_sel = X[:, selected_indices]
 
-    X_train_sel = X_train[:, selected]
-    X_test_sel = X_test[:, selected]
+    # Use Stratified K-Fold for stable evaluation
+    skf = StratifiedKFold(n_splits=3, shuffle=True, random_state=seed)
+    scores = []
 
-    # Fast ANN-like model (similar behavior to Keras MLP)
-    model = MLPClassifier(hidden_layer_sizes=(16, 8),
-                          max_iter=400,
-                          learning_rate_init=0.001,
-                          random_state=42)
+    for train_idx, test_idx in skf.split(X_sel, y):
+        X_train, X_test = X_sel[train_idx], X_sel[test_idx]
+        y_train, y_test = y[train_idx], y[test_idx]
 
-    model.fit(X_train_sel, y_train)
-    y_pred = model.predict(X_test_sel)
+        model = MLPClassifier(hidden_layer_sizes=(16, 8),
+                              max_iter=400,
+                              learning_rate_init=0.001,
+                              random_state=seed)
+        model.fit(X_train, y_train)
+        y_pred = model.predict(X_test)
+        scores.append(accuracy_score(y_test, y_pred))
 
-    return accuracy_score(y_test, y_pred)
+    return np.mean(scores)  # average accuracy across folds
 
 # ---------------------------
 # Selection (Roulette Wheel)
 # ---------------------------
 def select(population, fitnesses):
     fitness_sum = np.sum(fitnesses)
+    if fitness_sum == 0:
+        return population.copy()  # if all fitnesses are 0
     probs = fitnesses / fitness_sum
-    idx = np.random.choice(population_size, size=population_size, p=probs)
+    idx = np.random.choice(np.arange(population_size), size=population_size, p=probs)
     return population[idx]
 
 # ---------------------------
@@ -80,7 +86,7 @@ def select(population, fitnesses):
 # ---------------------------
 def crossover(p1, p2):
     if random.random() < crossover_prob:
-        point = random.randint(1, num_features - 1)
+        point = random.randint(1, num_features-1)
         c1 = np.concatenate([p1[:point], p2[point:]])
         c2 = np.concatenate([p2[:point], p1[point:]])
         return c1, c2
@@ -101,16 +107,15 @@ def mutate(individual):
 for gen in range(num_generations):
     fitnesses = np.array([fitness(ind) for ind in population])
     print(f"Generation {gen+1}: Best Fitness = {fitnesses.max():.4f}")
-
+    
     selected = select(population, fitnesses)
-
+    
     next_pop = []
     for i in range(0, population_size, 2):
         p1, p2 = selected[i], selected[i+1]
         c1, c2 = crossover(p1, p2)
-        next_pop.append(mutate(c1))
-        next_pop.append(mutate(c2))
-
+        next_pop.extend([mutate(c1), mutate(c2)])
+    
     population = np.array(next_pop)
 
 # ---------------------------
@@ -129,6 +134,5 @@ print(selected_feature_names)
 # Save optimized dataset
 # ---------------------------
 new_data = data[selected_feature_names + ["diagnosis"]]
-new_data.to_csv("breast_cancer_features_for_ann.csv", index=False)
+new_data.to_csv("new_breast_cancer_features_for_ann.csv", index=False)
 
-print("\nNew optimized dataset saved as: breast_cancer_features_for_ann.csv")
